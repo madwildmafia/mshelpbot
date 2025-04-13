@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "main": "dist/index.js",
   "scripts": {
-    "start": " npx tsx src/bot.ts"
+    "start": " npx tsx src/bot.ts",
+    "build": "tsc"
   },
   "devDependencies": {
     "@types/node": "^22.14.1",
