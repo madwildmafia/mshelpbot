@@ -110,8 +110,8 @@ bot.on('text', async (ctx) => {
     if (mention && mention.toLowerCase() !== targetBotMention) return;
 
     const allowed = await isFromAllowedUser(ctx);
+    console.log(`🚫 User ${ctx.from.username || ctx.from.id} send message:\n ${ctx.message.text} \n`);
     if (!allowed) {
-        console.log(`🚫 User ${ctx.from.username || ctx.from.id} send message`);
         return;
     }
 
