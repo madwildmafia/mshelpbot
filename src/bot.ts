@@ -5,7 +5,8 @@ dotenv.config();
 
 const bot = new Telegraf(process.env.BOT_TOKEN!);
 
-const targetBotMention = '@MafiaUaBot';
+const targetBotMention = 'mafiauabot'; // без @ для зручності порівняння
+
 const tips = [
     '💡 Дійте обдумано. У перші дні гри утримайтесь від хаотичних голосувань. Рандомні рішення можуть призвести до загибелі мирного жителя або зробити вас легкою мішенню.',
     '🟢 Будьте активними. Навіть якщо вам випала мирна роль, не ігноруйте гру. Ваша відсутність послаблює команду і може призвести до програшу.',
@@ -77,12 +78,14 @@ const cancelTimer = () => {
 
 const extractCommand = (text: string) => {
     const tokens = text.trim().split(/\s+/);
-    const baseCommand = tokens[0];
-    const mention = tokens[1]?.startsWith('@') ? tokens[1] : null;
-    const value = parseInt(tokens[mention ? 2 : 1]) || null;
+    const fullCommand = tokens[0].toLowerCase(); // наприклад, "/start@MafiaUaBot"
+    const baseCommand = fullCommand.split('@')[0]; // "/start"
+    const mention = fullCommand.includes('@') ? fullCommand.split('@')[1] : null;
+    const value = parseInt(tokens[1]) || null;
 
     return { baseCommand, mention, value };
 };
+
 
 const isFromAllowedUser = async (ctx: any) => {
     const fromId = ctx.from.id;
@@ -104,7 +107,7 @@ bot.on('text', async (ctx) => {
     const { baseCommand, mention, value } = extractCommand(text);
 
     // якщо згадка є — і вона НЕ @mafiagamebot → ігноруємо
-    if (mention && mention !== targetBotMention) return;
+    if (mention && mention.toLowerCase() !== targetBotMention) return;
 
     const allowed = await isFromAllowedUser(ctx);
     if (!allowed) {
@@ -137,7 +140,7 @@ bot.on('text', async (ctx) => {
             console.log(`⏳ Таймер подовжено. Нова затримка: ${Math.floor(remainingTime / 1000)} сек.`);
             break;
 
-        case '/cancel':
+        case '/stop':
             cancelTimer();
             break;
 
