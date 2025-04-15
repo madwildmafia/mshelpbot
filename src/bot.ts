@@ -41,7 +41,7 @@ let initiatorId: number | null = null;
 const resetTimer = (ctx: any) => {
     const randomTip = tips[Math.floor(Math.random() * tips.length)];
     ctx.reply(`! ${randomTip}\n\n[Moonlight Escort Mafia](https://t.me/+JjjF-m8cPs1kNTUy) | [Bot](https://t.me/mlesmafia_bot)`, { parse_mode: 'Markdown', disable_web_page_preview: true});
-
+    console.log("✅ give tip")
     if (timeout) clearTimeout(timeout);
     timeout = null;
     remainingTime = 120 * 1000;
@@ -57,7 +57,7 @@ const launchTimer = async (ctx: any) => {
     initiatorId = ctx.from.id;
     startTime = Date.now();
 
-    console.log('🔁 Очікуємо 2 хв... Напишіть "/extend @mafiagamebot" щоб подовжити.');
+    console.log('🔁 get start');
 
     timeout = setTimeout(() => {
         resetTimer(ctx);
@@ -70,9 +70,9 @@ const cancelTimer = () => {
         timeout = null;
         remainingTime = 120 * 1000;
         initiatorId = null;
-        console.log('❌ Очікування скасовано.');
+        console.log('❌ stop');
     } else {
-        console.log('⚠️ Немає активного таймера.');
+        console.log('⚠️ do not have timer');
     }
 };
 
@@ -97,7 +97,7 @@ const isFromAllowedUser = async (ctx: any) => {
         const admins = await ctx.getChatAdministrators();
         return admins.some((admin: any) => admin.user.id === fromId);
     } catch (error) {
-        console.log('⚠️ Не вдалося отримати список адміністраторів чату');
+        console.log('⚠️Cannot get admin list');
         return false;
     }
 };
@@ -111,7 +111,7 @@ bot.on('text', async (ctx) => {
 
     const allowed = await isFromAllowedUser(ctx);
     if (!allowed) {
-        console.log(`🚫 Користувач ${ctx.from.username || ctx.from.id} не має прав`);
+        console.log(`🚫 User ${ctx.from.username || ctx.from.id} send message`);
         return;
     }
 
@@ -123,7 +123,7 @@ bot.on('text', async (ctx) => {
 
         case '/extend':
             if (!timeout) {
-                console.log('⏱️ Немає активного таймера. Напишіть /start.');
+                console.log('⏱️ Do not have timer');
                 return;
             }
 
@@ -137,7 +137,7 @@ bot.on('text', async (ctx) => {
                 resetTimer(ctx);
             }, remainingTime);
 
-            console.log(`⏳ Таймер подовжено. Нова затримка: ${Math.floor(remainingTime / 1000)} сек.`);
+            console.log(`⏳ Extend. to tip: ${Math.floor(remainingTime / 1000)} s.`);
             break;
 
         case '/stop':
@@ -149,7 +149,7 @@ bot.on('text', async (ctx) => {
     }
 });
 bot.launch();
-console.log('✅ Бот запущено');
+console.log('✅ BOT STARTED');
 
 process.once('SIGINT', () => bot.stop('SIGINT'));
 process.once('SIGTERM', () => bot.stop('SIGTERM'));
